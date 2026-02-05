@@ -1,0 +1,21 @@
+{
+  "name": "bot-telegram-fast",
+  "module": "index.ts",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "private": true,
+  "scripts": {
+    "start": "bun ./src/index.ts",
+    "dev": "bun --watch ./src/index.ts",
+    "build": "tsc"
+  },
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "telegraf": "^4.16.3"
+  }
+}
