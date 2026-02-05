@@ -25,7 +25,6 @@ bot.on("text", async (ctx) => {
         `No pudimos obtener un resultado para tu busqueda de ${query} se obtuvieron estos resultados ${results}`,
       );
     }
-
     const buttons = results?.map((result) => [
       Markup.button.callback(
         `🎵 ${result.title} - ${result.artist}`,
