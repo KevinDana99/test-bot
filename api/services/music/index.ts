@@ -1,5 +1,5 @@
 import axios from "axios";
-import config from "../../config/index.ts";
+import config from "../../config/index.js";
 let results = [] as any;
 interface DownloadResult {
   soundTrack: Buffer;
