@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { Markup, Telegraf } from "telegraf";
-import MusicService from "./services/music";
+import MusicService from "./services/music/index.ts";
 
 const bot = new Telegraf(process.env.BOT_TOKEN!);
 
