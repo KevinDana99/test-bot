@@ -1,12 +1,14 @@
 import "dotenv/config";
 import { Markup, Telegraf } from "telegraf";
 import MusicService from "./services/music/index.js";
+import { setupActions } from "./bot/actions/index.js";
 
-const bot = new Telegraf(process.env.BOT_TOKEN!);
+export const bot = new Telegraf(process.env.BOT_TOKEN!);
 
 bot.start((ctx) => ctx.reply("¡Hola! El bot está vivo en Vercel 🚀"));
 bot.help((ctx) => ctx.reply("Mandame cualquier cosa y te la repito."));
-
+setupActions();
+console.log("🔘 Actions registradas");
 bot.on("text", async (ctx) => {
   const query = ctx.message.text;
   try {
