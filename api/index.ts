@@ -1,13 +1,40 @@
 import "dotenv/config";
-import { Telegraf } from "telegraf";
+import { Markup, Telegraf } from "telegraf";
+import MusicService from "./services/music";
 
 const bot = new Telegraf(process.env.BOT_TOKEN!);
 
 bot.start((ctx) => ctx.reply("¡Hola! El bot está vivo en Vercel 🚀"));
 bot.help((ctx) => ctx.reply("Mandame cualquier cosa y te la repito."));
 
-bot.on("text", (ctx) => {
-  ctx.reply(`Me dijiste: ${ctx.message.text}`);
+bot.on("text", async (ctx) => {
+  const query = ctx.message.text;
+  try {
+    const results = (await MusicService.search(query)) as Array<{
+      title: string;
+      artist: string;
+      id: string;
+    }>;
+
+    if (!results || results.length === 0) {
+      return await ctx.reply(
+        "No pudimos obtener un resultado para tu busqueda",
+      );
+    }
+
+    const buttons = results?.map((result) => [
+      Markup.button.callback(
+        `🎵 ${result.title} - ${result.artist}`,
+        `info_${result.id}`,
+      ),
+    ]);
+    await ctx.reply(
+      "estos son tus resultados de busqueda:",
+      Markup.inlineKeyboard(buttons),
+    );
+  } catch (err) {
+    console.error(err);
+  }
 });
 
 export default async (req: any, res: any) => {
