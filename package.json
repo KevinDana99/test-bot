@@ -9,9 +9,9 @@
   },
   "private": true,
   "scripts": {
-    "start": "bun ./src/index.ts",
-    "dev": "bun --watch ./src/index.ts",
-    "build": "tsc"
+    "dev": "bun --watch api/index.ts",
+    "start": "bun api/index.ts",
+    "build": "tsc --noEmit"
   },
   "type": "module",
   "dependencies": {
