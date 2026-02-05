@@ -13,7 +13,7 @@ bot.on("text", async (ctx) => {
   const query = ctx.message.text;
   try {
     await ctx.reply(`Buscando ${query}`);
-    /*
+
     const results = (await MusicService.search(query)) as Array<{
       title: string;
       artist: string;
@@ -32,12 +32,11 @@ bot.on("text", async (ctx) => {
         `info_${result.id}`,
       ),
     ]);
-    
+
     await ctx.reply(
       "estos son tus resultados de busqueda:",
       Markup.inlineKeyboard(buttons),
     );
-    */
   } catch (err) {
     console.error(err);
   }
