@@ -10,6 +10,7 @@ bot.help((ctx) => ctx.reply("Mandame cualquier cosa y te la repito."));
 bot.on("text", async (ctx) => {
   const query = ctx.message.text;
   try {
+    await ctx.reply(`Buscando ${query}`);
     const results = (await MusicService.search(query)) as Array<{
       title: string;
       artist: string;
@@ -18,7 +19,7 @@ bot.on("text", async (ctx) => {
 
     if (!results || results.length === 0) {
       return await ctx.reply(
-        "No pudimos obtener un resultado para tu busqueda",
+        `No pudimos obtener un resultado para tu busqueda de ${query} se obtuvieron estos resultados ${results}`,
       );
     }
 
