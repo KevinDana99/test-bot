@@ -17,11 +17,6 @@ export const search = async (query: string) => {
     console.log(err);
   }
 };
-export const findById = async (id: string) => {
-  console.log({ results, find: true });
-  const result = results.find((res: { id: string }) => res.id === id);
-  return result[0];
-};
 export const download = async (
   artist: string,
   title: string,
@@ -35,15 +30,12 @@ export const download = async (
     const response = await axios({
       method: "get",
       url: url,
-      responseType: "stream",
+      responseType: "json",
     });
 
     // Axios en Node pone los headers en minúsculas
-    const total = parseInt(response.headers["content-length"] || "0", 10);
-    const durationTrack = parseInt(
-      response.headers["duration-track"] || "0",
-      10,
-    );
+    const total = parseInt(response.data.size);
+    const durationTrack = parseInt(response.data.duration.seconds);
 
     let loaded = 0;
     const chunks: any[] = [];
@@ -86,19 +78,14 @@ ${clock} Tu descarga estara lista en ${Math.ceil(eta / 60)} min aprox`,
       notifyTime();
       intervalTime = setInterval(notifyTime, 5000);
     };
-    setTimeout(sendDownloadMessage, 500);
-    return new Promise((resolve, reject) => {
-      response.data.on("data", (chunk: Buffer) => {
-        loaded += chunk.length;
-        chunks.push(chunk);
 
-        if (total > 0) {
-          console.clear();
-        }
+    return new Promise((resolve, reject) => {
+      response.data.on("data", () => {
+        sendDownloadMessage();
       });
 
       response.data.on("end", () => {
-        const soundTrack = Buffer.concat(chunks);
+        const soundTrack = response.data.audio_track;
         clearInterval(intervalTime);
         resolve({ soundTrack, durationTrack });
       });
