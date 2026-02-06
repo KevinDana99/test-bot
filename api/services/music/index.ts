@@ -27,18 +27,17 @@ export const download = async (
   try {
     const url = `${config.API_HOST}/api/music/download?title=${encodeURIComponent(title)}&artist=${encodeURIComponent(artist)}`;
 
-    const response = await axios({
+    const patchResponse = await axios({
       method: "get",
       url: url,
-      responseType: "json",
+      responseType: "json", // Axios parseará el JSON automáticamente
     });
-
-    // Axios en Node pone los headers en minúsculas
-    const total = parseInt(response.data.size);
-    const durationTrack = parseInt(response.data.duration.seconds);
+    const response = await patchResponse.data;
+    const total = parseInt(response.meta_data.size);
+    const durationTrack = parseInt(response.meta_data.duration.seconds);
 
     let loaded = 0;
-    const chunks: any[] = [];
+    const chunks: any[] = response;
     let count = 0;
     let message: any;
     let intervalTime: NodeJS.Timeout;
@@ -85,7 +84,7 @@ ${clock} Tu descarga estara lista en ${Math.ceil(eta / 60)} min aprox`,
       });
 
       response.data.on("end", () => {
-        const soundTrack = response.data.audio_track;
+        const soundTrack = response.audio_track;
         clearInterval(intervalTime);
         resolve({ soundTrack, durationTrack });
       });
