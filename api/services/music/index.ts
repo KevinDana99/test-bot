@@ -1,6 +1,5 @@
 import axios from "axios";
 import config from "../../config/index.js";
-let results = [] as any;
 interface DownloadResult {
   soundTrack: Buffer;
   durationTrack: number;
@@ -11,7 +10,6 @@ export const search = async (query: string) => {
       `${config.API_HOST}/api/music/search?q=${encodeURIComponent(query)}`,
     );
     const res = await req.json();
-    results = res;
     return res;
   } catch (err) {
     console.log(err);
@@ -33,17 +31,18 @@ export const download = async (
       responseType: "json", // Axios parseará el JSON automáticamente
     });
     const response = await patchResponse.data;
-    const total = parseInt(response.meta_data.size);
     const durationTrack = parseInt(response.meta_data.duration.seconds);
+    console.log({ response });
 
     let loaded = 0;
-    const chunks: any[] = response;
     let count = 0;
     let message: any;
     let intervalTime: NodeJS.Timeout;
     const clock = ["🕛", "🕒", "🕕", "🕘"][Math.floor(Date.now() / 10000) % 4];
     const sendDownloadMessage = async () => {
       const notifyTime = async () => {
+        const total = parseInt(response.meta_data.size);
+
         const elapsedTime = (Date.now() - startTime) / 1000; // segundos
         const speed = loaded / elapsedTime; // bytes/seg
         const eta = (total - loaded) / speed;
@@ -77,22 +76,11 @@ ${clock} Tu descarga estara lista en ${Math.ceil(eta / 60)} min aprox`,
       notifyTime();
       intervalTime = setInterval(notifyTime, 5000);
     };
+    setTimeout(sendDownloadMessage, 300);
 
-    return new Promise((resolve, reject) => {
-      response.data.on("data", () => {
-        sendDownloadMessage();
-      });
+    const soundTrack = response.audio_track;
 
-      response.data.on("end", () => {
-        const soundTrack = response.audio_track;
-        clearInterval(intervalTime);
-        resolve({ soundTrack, durationTrack });
-      });
-
-      response.data.on("error", (err: Error) => {
-        reject(err);
-      });
-    });
+    return { soundTrack, durationTrack };
   } catch (err) {
     console.error("Error en la descarga del bot:", err);
     throw err;
