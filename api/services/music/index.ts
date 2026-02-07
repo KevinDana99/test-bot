@@ -4,6 +4,15 @@ interface DownloadResult {
   soundTrack: Buffer;
   durationTrack: number;
 }
+interface DownloadRequest {
+  audio_track: string;
+  meta_data: {
+    duration: {
+      seconds: string;
+    };
+    size: string;
+  };
+}
 export const search = async (query: string) => {
   try {
     const req = await fetch(
@@ -23,14 +32,10 @@ export const download = async (
   const startTime = Date.now();
 
   try {
-    const url = `${config.API_HOST}/api/music/download?title=${encodeURIComponent(title)}&artist=${encodeURIComponent(artist)}`;
-
-    const patchResponse = await axios({
-      method: "get",
-      url: url,
-      responseType: "json", // Axios parseará el JSON automáticamente
-    });
-    const response = await patchResponse.data;
+    const req = await fetch(
+      `${config.API_HOST}/api/music/download?title=${encodeURIComponent(title)}&artist=${encodeURIComponent(artist)}`,
+    );
+    const response = (await req.json()) as DownloadRequest;
     const durationTrack = parseInt(response.meta_data.duration.seconds);
     console.log({ response });
 
