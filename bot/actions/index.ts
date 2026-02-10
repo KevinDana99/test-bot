@@ -1,5 +1,5 @@
-import { bot } from "../config/index.js";
-import downloadAction from "./download/index.js";
+import { bot } from "../config/";
+import downloadAction from "./download/";
 
 export const setupActions = () => {
   bot.action(/^info_(.+)$/, async (ctx) => {

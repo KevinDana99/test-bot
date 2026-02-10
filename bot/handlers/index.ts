@@ -1,5 +1,5 @@
 import { Markup } from "telegraf";
-import { search } from "@/bot/services/music/search/index.js";
+import { search } from "@/bot/services/music/search/";
 import { bot } from "@/bot/config";
 import { aboutCommand, helpCommand, startCommand } from "../commands";
 import { SearchResultType } from "./types";

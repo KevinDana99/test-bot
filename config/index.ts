@@ -3,7 +3,7 @@ const PORT = process.env.PORT || 3000;
 const ENVIRONMENT = process.env.NODE_ENV;
 const PRODUCTION =
   (ENVIRONMENT as ConfigEnvoirmentType) === "production" ? true : false;
-const CONFIG = {
+const config = {
   PORT,
   ACCESS_TOKEN_TELEGRAM_BOT: process.env.ACCESS_TOKEN_TELEGRAM_BOT,
   API_HOST: PRODUCTION
@@ -13,4 +13,4 @@ const CONFIG = {
   RAPID_API_SECRET_KEY: process.env.RAPID_API_SECRET_KEY,
 };
 
-export default CONFIG;
+export default config;

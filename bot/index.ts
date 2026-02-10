@@ -1,7 +1,7 @@
 import "dotenv/config";
-import { bot } from "@/bot/config/index.js";
-import { setupHandlers } from "@/bot/handlers/index.js";
-import { setupActions } from "@/bot/actions/index.js";
+import { bot } from "@/bot/config/";
+import { setupHandlers } from "@/bot/handlers/";
+import { setupActions } from "@/bot/actions/";
 import { Context, Telegraf } from "telegraf";
 import { Update } from "telegraf/types";
 

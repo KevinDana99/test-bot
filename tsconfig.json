@@ -1,10 +1,9 @@
 {
   "compilerOptions": {
-    "ignoreDeprecations": "5.0",
     "target": "ESNext",
-    "module": "ESNext",
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "module": "ESNext",
+    "allowImportingTsExtensions": false,
     "noEmit": true,
     "paths": {
       "@/*": ["./*"]

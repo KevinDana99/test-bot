@@ -2,28 +2,18 @@ import initBot from "@/bot";
 import { bot } from "@/bot/config";
 import "dotenv/config";
 import express from "express";
+import router from "./router";
+import config from "@/config";
 
 const app = express();
-const PORT = process.env.PORT;
-
-app.get("/", (req, res) => {
-  try {
-    res.status(200).json({ status: 200, description: "bot working" });
-  } catch (err) {
-    if (err instanceof Error) {
-      res.status(500).json({
-        status: 500,
-        description: "bot not working",
-        message: err.message,
-        error: err.name,
-      });
-    }
-  }
-});
-
-app.listen(PORT, () => {
+//midlewares
+app.use(express.json());
+//router
+router(app);
+//exeptionhandlers
+app.listen(config.PORT, () => {
   initBot(bot);
-  console.log(`on port ${PORT}`);
+  console.log(`on port ${config.PORT}`);
 });
 
 process.once("SIGINT", () => bot.stop("SIGINT"));
