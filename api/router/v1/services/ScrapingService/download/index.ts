@@ -11,12 +11,12 @@ export const downloadService = async (artist: string, title: string) => {
       method: "GET",
       headers: {
         "x-rapidapi-key": config.RAPID_API_SECRET_KEY ?? "",
-        "x-rapidapi-host": config.API_HOST ?? "",
+        "x-rapidapi-host": config.RAPID_API_HOST ?? "",
       },
     };
     console.log({ options, config });
     const response = await fetch(
-      `https://${config.API_HOST}/dl?id=${video.videoId}`,
+      `https://${config.RAPID_API_HOST}/dl?id=${video.videoId}`,
       options
     );
 
