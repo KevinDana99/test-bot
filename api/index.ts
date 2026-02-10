@@ -8,6 +8,8 @@ import config from "@/config";
 const app = express();
 //midlewares
 app.use(express.json());
+//seters
+app.set("json spaces", 2);
 //router
 router(app);
 //exeptionhandlers
