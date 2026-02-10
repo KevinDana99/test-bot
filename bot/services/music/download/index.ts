@@ -10,7 +10,7 @@ export const downloadService = async (
 
   try {
     const req = await fetch(
-      `${config.API_HOST}/api/music/download?title=${encodeURIComponent(
+      `${config.API_HOST}/api/v1/music/download?title=${encodeURIComponent(
         title
       )}&artist=${encodeURIComponent(artist)}`
     );

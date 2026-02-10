@@ -3,7 +3,7 @@ import ScrapingService from "../../services/ScrapingService";
 
 const route = express.Router();
 
-route.get("/api/music/download", async (req: Request, res: Response) => {
+route.get("/", async (req: Request, res: Response) => {
   try {
     const { artist, title } = req.query;
     if (!artist || !title) {

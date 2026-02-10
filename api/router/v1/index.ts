@@ -5,6 +5,6 @@ import searchRoute from "./routes/search";
 const v1 = express.Router();
 
 v1.use("/", rootRoute);
-v1.use("/search", searchRoute);
-v1.use("/dowload", downloadRoute);
+v1.use("/music/search", searchRoute);
+v1.use("/music/dowload", downloadRoute);
 export default v1;

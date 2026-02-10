@@ -3,7 +3,7 @@ import ScrapingService from "../../services/ScrapingService";
 
 const route = express.Router();
 
-route.get("/api/music/search", async (req: Request, res: Response) => {
+route.get("/", async (req: Request, res: Response) => {
   try {
     const query = req.query.q as string;
     const searchResults = await ScrapingService.search(query);
