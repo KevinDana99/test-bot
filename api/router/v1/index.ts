@@ -6,5 +6,5 @@ const v1 = express.Router();
 
 v1.use("/", rootRoute);
 v1.use("/music/search", searchRoute);
-v1.use("/music/dowload", downloadRoute);
+v1.use("/music/download", downloadRoute);
 export default v1;
