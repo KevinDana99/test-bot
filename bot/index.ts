@@ -2,8 +2,10 @@ import "dotenv/config";
 import { bot } from "@/bot/config/index.js";
 import { setupHandlers } from "@/bot/handlers/index.js";
 import { setupActions } from "@/bot/actions/index.js";
+import { Context, Telegraf } from "telegraf";
+import { Update } from "telegraf/types";
 
-async function initBot() {
+async function initBot(bot: Telegraf<Context<Update>>) {
   try {
     setupHandlers();
     console.log("📝 Handlers registrados");
@@ -23,7 +25,4 @@ async function initBot() {
   }
 }
 
-initBot();
-
-process.once("SIGINT", () => bot.stop("SIGINT"));
-process.once("SIGTERM", () => bot.stop("SIGTERM"));
+export default initBot;
