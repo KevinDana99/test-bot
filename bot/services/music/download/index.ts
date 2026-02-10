@@ -1,39 +1,18 @@
-import axios from "axios";
-import config from "../../config/index.js";
-interface DownloadResult {
-  soundTrack: Buffer;
-  durationTrack: number;
-}
-interface DownloadRequest {
-  audio_track: string;
-  meta_data: {
-    duration: {
-      seconds: string;
-    };
-    size: string;
-  };
-}
-export const search = async (query: string) => {
-  try {
-    const req = await fetch(
-      `${config.API_HOST}/api/music/search?q=${encodeURIComponent(query)}`,
-    );
-    const res = await req.json();
-    return res;
-  } catch (err) {
-    console.log(err);
-  }
-};
-export const download = async (
+import config from "@/config";
+import type { DownloadRequest, DownloadResult } from "./types";
+
+export const downloadService = async (
   artist: string,
   title: string,
-  ctx: any,
+  ctx: any
 ): Promise<DownloadResult> => {
   const startTime = Date.now();
 
   try {
     const req = await fetch(
-      `${config.API_HOST}/api/music/download?title=${encodeURIComponent(title)}&artist=${encodeURIComponent(artist)}`,
+      `${config.API_HOST}/api/music/download?title=${encodeURIComponent(
+        title
+      )}&artist=${encodeURIComponent(artist)}`
     );
     const response = (await req.json()) as DownloadRequest;
     const durationTrack = parseInt(response.meta_data.duration.seconds);
@@ -55,7 +34,7 @@ export const download = async (
           message = await ctx.reply(
             `Descargando ${artist} - ${title}..
 
-${clock} Tu descarga estara lista en ${Math.ceil(eta / 60)} min aprox`,
+${clock} Tu descarga estara lista en ${Math.ceil(eta / 60)} min aprox`
           );
         } else {
           try {
@@ -65,15 +44,15 @@ ${clock} Tu descarga estara lista en ${Math.ceil(eta / 60)} min aprox`,
               undefined,
               `Descargando ${artist} - ${title}..
 
-${clock} Tu descarga estara lista en ${Math.ceil(eta / 60)} min aprox`,
+${clock} Tu descarga estara lista en ${Math.ceil(eta / 60)} min aprox`
             );
           } catch (err) {
-            if (
-              err.response?.description?.includes("message is not modified")
-            ) {
-              return;
+            if (err instanceof Error) {
+              if (err.message.includes("message is not modified")) {
+                return;
+              }
+              console.error("Error al editar:", err.message);
             }
-            console.error("Error al editar:", err.description);
           }
         }
         count = 1;
@@ -92,8 +71,4 @@ ${clock} Tu descarga estara lista en ${Math.ceil(eta / 60)} min aprox`,
   }
 };
 
-const MusicService = {
-  download,
-  search,
-};
-export default MusicService;
+export default downloadService;

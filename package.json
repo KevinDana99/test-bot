@@ -15,8 +15,10 @@
   },
   "type": "module",
   "dependencies": {
+    "@types/express": "^5.0.6",
     "axios": "^1.13.4",
     "dotenv": "^17.2.3",
+    "express": "^5.2.1",
     "telegraf": "^4.16.3"
   }
 }
