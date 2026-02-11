@@ -1,16 +1,15 @@
-import { chromium } from "playwright";
+import { Browser } from "playwright";
 import type { QueryConfigType, ResultsListType } from "./types";
+import instanceBrowser from "../browser";
 
 const LIMIT_RESULTS = 5;
 
-const searchService = async (query: string, config?: QueryConfigType) => {
+export const search = async (query: string, config?: QueryConfigType) => {
+  const { context } = await instanceBrowser();
   const limit = config?.limit ?? LIMIT_RESULTS;
 
-  // 1. Lanzamos el navegador
-  const browser = await chromium.launch({ headless: true });
-
   try {
-    const page = await browser.newPage();
+    const page = await context.newPage();
 
     // 2. BLOQUEO DE RECURSOS (Optimizaciones previas + extras)
     // Bloqueamos CSS, imágenes, fuentes y scripts de terceros/analytics
@@ -68,8 +67,6 @@ const searchService = async (query: string, config?: QueryConfigType) => {
     throw err;
   } finally {
     // 5. CIERRE SEGURO
-    await browser.close();
+    await context.close();
   }
 };
-
-export default searchService;

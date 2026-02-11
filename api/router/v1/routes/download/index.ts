@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import ScrapingService from "../../services/ScrapingService";
+import ScrapingService from "../../services/ScrapingService/";
 
 const route = express.Router();
 

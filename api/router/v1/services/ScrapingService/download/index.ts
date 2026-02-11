@@ -2,7 +2,7 @@ import yts from "yt-search";
 import config from "@/config";
 import type { DonwloadYtRequest } from "./types";
 
-export const downloadService = async (artist: string, title: string) => {
+export const download = async (artist: string, title: string) => {
   try {
     const search = await yts(`${title} ${artist} Hardstyle`);
     const video = search.videos[0];
@@ -47,4 +47,3 @@ export const downloadService = async (artist: string, title: string) => {
     return null;
   }
 };
-export default downloadService;

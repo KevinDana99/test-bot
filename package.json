@@ -11,7 +11,8 @@
   "scripts": {
     "dev": "bun --watch api/index.ts",
     "start": "bun api/index.ts",
-    "build": "tsc --noEmit"
+    "build": "tsc --noEmit",
+    "verify": "tsc --noEmit"
   },
   "type": "module",
   "dependencies": {

@@ -18,7 +18,7 @@ async function initBot(bot: Telegraf<Context<Update>>) {
       { command: "about", description: "ℹ️ Sobre este proyecto" },
     ]);
     await bot.launch();
-    console.log("🚀 ¡Bot de Música Online y escuchando!");
+    console.log("🤖 Bot is listening...");
   } catch (error) {
     console.error("❌ Error al iniciar el bot:", error);
     process.exit(1);
