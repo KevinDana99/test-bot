@@ -1,41 +1,43 @@
-import { Markup } from "telegraf";
-import { search } from "@/bot/services/music/search/";
-import { bot } from "@/bot/config";
-import { aboutCommand, helpCommand, startCommand } from "../commands";
-import { SearchResultType } from "./types";
+import { Markup } from 'telegraf'
+import { search } from '@/bot/services/music/search/'
+import { bot } from '@/bot/config'
+import { aboutCommand, helpCommand, startCommand } from '../commands'
+import { SearchResultType } from './types'
+import { handleError } from '../errors/errorHandler'
 
 export const setupHandlers = () => {
-  bot.start(startCommand);
-  bot.help(helpCommand);
-  bot.command("about", aboutCommand);
-  bot.on("text", async (ctx) => {
-    const message = ctx.message.text;
-    if (message.startsWith("/")) {
+  bot.start(startCommand)
+  bot.help(helpCommand)
+  bot.command('about', aboutCommand)
+  bot.on('text', async (ctx) => {
+    const message = ctx.message.text
+    if (message.startsWith('/')) {
       return ctx.reply(
-        "❌ Ese comando no existe. Escribí /help para ver qué puedo hacer."
-      );
+        '❌ Ese comando no existe. Escribí /help para ver qué puedo hacer.'
+      )
     }
-    await ctx.reply(`🔎 Buscando música relacionada con: "${message}"...`);
+    //await ctx.reply(`🔎 Buscando música relacionada con: "${message}"...`);
+    return await ctx.reply(handleError('503'))
     try {
-      const results: [] = await search(message);
+      const results: [] = await search(message)
       if (results.length === 0) {
-        await ctx.reply("❌ No se encontro ningun resultado para tu busqueda");
-        return;
+        await ctx.reply('❌ No se encontro ningun resultado para tu busqueda')
+        return
       } else {
         const buttons = results?.map((result: SearchResultType) => [
           Markup.button.callback(
             `🎵 ${result.title} - ${result.artist}`,
             `info_${result.id}`
-          ),
-        ]);
+          )
+        ])
 
         await ctx.reply(
-          "estos son tus resultados de busqueda:",
+          'estos son tus resultados de busqueda:',
           Markup.inlineKeyboard(buttons)
-        );
+        )
       }
     } catch (err) {
-      await ctx.reply(`${err}`);
+      await ctx.reply(`${err}`)
     }
-  });
-};
+  })
+}
