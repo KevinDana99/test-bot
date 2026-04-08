@@ -1,5 +1,5 @@
 type ConfigEnvoirmentType = 'production' | 'development'
-const PORT = process.env.PORT || 3003
+const PORT = process.env.PORT || 3000
 const ENVIRONMENT = process.env.NODE_ENV
 const PRODUCTION =
   (ENVIRONMENT as ConfigEnvoirmentType) === 'production' ? true : false
@@ -10,7 +10,8 @@ const config = {
     ? `https://${process.env.FLY_APP_NAME}.fly.dev`
     : `http://localhost:${PORT}`,
   RAPID_API_HOST: process.env.RAPID_API_HOST,
-  RAPID_API_SECRET_KEY: process.env.RAPID_API_SECRET_KEY
+  RAPID_API_SECRET_KEY: process.env.RAPID_API_SECRET_KEY,
+  GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY
 }
 
 export default config

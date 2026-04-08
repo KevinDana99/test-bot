@@ -16,7 +16,7 @@ app.set('json spaces', 2)
 //router
 router(app)
 //exeptionhandlers
-app.listen(config.PORT, async () => {
+app.listen(Number(config.PORT), '0.0.0.0', async () => {
   try {
     await verifyApi('v1')
     await verifyApi('v2')

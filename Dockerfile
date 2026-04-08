@@ -1,5 +1,5 @@
 # 1. Imagen base con dependencias de Playwright
-FROM mcr.microsoft.com/playwright:v1.58.2-jammy
+FROM mcr.microsoft.com/playwright:v1.59.1-jammy
 
 # 2. Instalamos Bun
 RUN apt-get update && apt-get install -y curl unzip \
