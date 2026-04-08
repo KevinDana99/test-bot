@@ -3,6 +3,7 @@ export interface ApiV2TrackSummary {
   title: string;
   artists: string[];
   mix: string;
+  mixType: "extended" | "radio" | "original" | "remix" | "edit" | "unknown";
   duration: string;
   label: string;
   image?: string;
@@ -22,10 +23,20 @@ export interface SearchResultType {
   artist: string;
   artists: string[];
   mix?: string;
+  mixType: ApiV2TrackSummary["mixType"];
   duration?: string;
   label?: string;
   image?: string;
   previewUrl: string;
   pageUrl?: string;
   downloadUrl: string;
+}
+
+export interface GroupedSearchResultType {
+  key: string;
+  title: string;
+  artist: string;
+  original?: SearchResultType;
+  extended?: SearchResultType;
+  radio?: SearchResultType;
 }

@@ -1,8 +1,30 @@
 import { Markup } from 'telegraf'
-import { search } from '@/bot/services/music/search/'
+import { groupTracksBySong, search } from '@/bot/services/music/search/'
 import { bot } from '@/bot/config'
 import { aboutCommand, helpCommand, startCommand } from '../commands'
-import { SearchResultType } from './types'
+import { GroupedSearchResultType } from './types'
+
+function buildMixButtons(group: GroupedSearchResultType) {
+  const buttons = []
+
+  if (group.original) {
+    buttons.push(
+      Markup.button.callback('Original Mix', `info_${group.original.id}`)
+    )
+  }
+
+  if (group.extended) {
+    buttons.push(
+      Markup.button.callback('Extended Mix', `info_${group.extended.id}`)
+    )
+  }
+
+  if (group.radio) {
+    buttons.push(Markup.button.callback('Radio Edit', `info_${group.radio.id}`))
+  }
+
+  return buttons
+}
 
 export const setupHandlers = () => {
   bot.start(startCommand)
@@ -19,20 +41,25 @@ export const setupHandlers = () => {
 
     try {
       const results = await search(message)
-      if (results.length === 0) {
+      const groups = groupTracksBySong(results)
+
+      if (groups.length === 0) {
         await ctx.reply('❌ No se encontro ningun resultado para tu busqueda')
         return
-      } else {
-        const buttons = results?.map((result: SearchResultType) => [
-          Markup.button.callback(
-            `🎵 ${result.artist} - ${result.title}${result.mix ? ` (${result.mix})` : ''}`,
-            `info_${result.id}`
-          )
-        ])
+      }
+
+      await ctx.reply('estos son tus resultados de busqueda:')
+
+      for (const group of groups) {
+        const buttons = buildMixButtons(group)
+
+        if (buttons.length === 0) {
+          continue
+        }
 
         await ctx.reply(
-          'estos son tus resultados de busqueda:',
-          Markup.inlineKeyboard(buttons)
+          `🎵 ${group.artist} - ${group.title}`,
+          Markup.inlineKeyboard([buttons])
         )
       }
     } catch (err) {

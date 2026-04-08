@@ -2,6 +2,7 @@ import config from "@/config";
 import type {
   ApiV2SearchResponse,
   ApiV2TrackSummary,
+  GroupedSearchResultType,
   SearchResultType,
 } from "./types";
 
@@ -33,6 +34,7 @@ function toBotTrack(track: ApiV2TrackSummary): SearchResultType {
     artist,
     artists: track.artists,
     mix: track.mix || undefined,
+    mixType: track.mixType,
     duration: track.duration || undefined,
     label: track.label || undefined,
     image: track.image,
@@ -50,6 +52,39 @@ function cacheTracks(tracks: SearchResultType[]) {
 
 export function getCachedTrack(trackId: string) {
   return trackCache.get(trackId);
+}
+
+export function groupTracksBySong(
+  tracks: SearchResultType[]
+): GroupedSearchResultType[] {
+  const groups = new Map<string, GroupedSearchResultType>();
+
+  for (const track of tracks) {
+    const key = `${track.artist}__${track.title}`.toLowerCase();
+    const currentGroup = groups.get(key) ?? {
+      key,
+      title: track.title,
+      artist: track.artist,
+    };
+
+    if (track.mixType === "original" && !currentGroup.original) {
+      currentGroup.original = track;
+    }
+
+    if (track.mixType === "extended" && !currentGroup.extended) {
+      currentGroup.extended = track;
+    }
+
+    if (track.mixType === "radio" && !currentGroup.radio) {
+      currentGroup.radio = track;
+    }
+
+    groups.set(key, currentGroup);
+  }
+
+  return Array.from(groups.values()).filter(
+    (group) => group.original || group.extended || group.radio
+  );
 }
 
 export const search = async (query: string): Promise<SearchResultType[]> => {
