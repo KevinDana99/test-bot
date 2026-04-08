@@ -1,5 +1,1 @@
-export type SearchResultType = {
-  artist: string;
-  title: string;
-  id: string;
-};
+export type { SearchResultType } from "../services/music/search/types";

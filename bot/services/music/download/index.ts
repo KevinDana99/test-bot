@@ -1,74 +1,38 @@
-import config from "@/config";
-import type { DownloadRequest, DownloadResult } from "./types";
+import type { DownloadResult, DownloadTrackInput } from "./types";
+
+function parseDurationToSeconds(duration?: string): number | undefined {
+  if (!duration) {
+    return undefined;
+  }
+
+  const parts = duration
+    .split(":")
+    .map((part) => Number.parseInt(part, 10))
+    .filter((part) => !Number.isNaN(part));
+
+  if (parts.length === 0) {
+    return undefined;
+  }
+
+  return parts.reduce((total, part) => total * 60 + part, 0);
+}
 
 export const downloadService = async (
-  artist: string,
-  title: string,
+  track: DownloadTrackInput,
   ctx: any
 ): Promise<DownloadResult> => {
-  const startTime = Date.now();
+  const displayTitle = track.mix ? `${track.title} (${track.mix})` : track.title;
 
-  try {
-    const req = await fetch(
-      `${config.API_HOST}/api/v1/music/download?title=${encodeURIComponent(
-        title
-      )}&artist=${encodeURIComponent(artist)}`
-    );
-    const response = (await req.json()) as DownloadRequest;
-    const durationTrack = parseInt(response.meta_data.duration.seconds);
-    console.log({ response });
+  await ctx.reply(
+    `Descargando ${track.artist} - ${displayTitle}...\n\n🕛 Tu descarga estara lista enseguida`
+  );
 
-    let loaded = 0;
-    let count = 0;
-    let message: any;
-    let intervalTime: NodeJS.Timeout;
-    const clock = ["🕛", "🕒", "🕕", "🕘"][Math.floor(Date.now() / 10000) % 4];
-    const sendDownloadMessage = async () => {
-      const notifyTime = async () => {
-        const total = parseInt(response.meta_data.size);
-
-        const elapsedTime = (Date.now() - startTime) / 1000; // segundos
-        const speed = loaded / elapsedTime; // bytes/seg
-        const eta = (total - loaded) / speed;
-        if (count === 0) {
-          message = await ctx.reply(
-            `Descargando ${artist} - ${title}..
-
-${clock} Tu descarga estara lista en ${Math.ceil(eta / 60)} min aprox`
-          );
-        } else {
-          try {
-            message = await ctx.telegram.editMessageText(
-              ctx.chat.id,
-              message.message_id,
-              undefined,
-              `Descargando ${artist} - ${title}..
-
-${clock} Tu descarga estara lista en ${Math.ceil(eta / 60)} min aprox`
-            );
-          } catch (err) {
-            if (err instanceof Error) {
-              if (err.message.includes("message is not modified")) {
-                return;
-              }
-              console.error("Error al editar:", err.message);
-            }
-          }
-        }
-        count = 1;
-      };
-      notifyTime();
-      intervalTime = setInterval(notifyTime, 5000);
-    };
-    setTimeout(sendDownloadMessage, 300);
-
-    const soundTrack = response.audio_track;
-
-    return { soundTrack, durationTrack };
-  } catch (err) {
-    console.error("Error en la descarga del bot:", err);
-    throw err;
-  }
+  return {
+    soundTrack: track.downloadUrl,
+    durationTrack: parseDurationToSeconds(track.duration),
+    title: displayTitle,
+    performer: track.artist,
+  };
 };
 
 export default downloadService;

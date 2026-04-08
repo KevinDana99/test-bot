@@ -1,20 +1,21 @@
 import downloadService from "@/bot/services/music/download";
+import type { SearchResultType } from "@/bot/services/music/search/types";
 
-async function downloadAction(ctx: any, artist: string, title: string) {
+async function downloadAction(ctx: any, track: SearchResultType) {
   try {
-    const audio = await downloadService(artist, title, ctx);
+    const audio = await downloadService(track, ctx);
     if (audio) {
-      const desctiption = `${artist} - ${title}`;
+      const description = `${audio.performer} - ${audio.title}`;
       await ctx.replyWithAudio(
         {
           url: audio.soundTrack,
-          filename: `${desctiption}.mp3`,
+          filename: `${description}.mp3`,
         },
         {
-          duration: audio.durationTrack,
-          title: desctiption,
-          performer: artist,
-          caption: `✅ ¡Listo! <b>${artist} - ${title}</b>`,
+          ...(audio.durationTrack ? { duration: audio.durationTrack } : {}),
+          title: audio.title,
+          performer: audio.performer,
+          caption: `✅ ¡Listo! <b>${description}</b>`,
           parse_mode: "HTML",
         }
       );

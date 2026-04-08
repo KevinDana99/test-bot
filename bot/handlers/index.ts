@@ -3,7 +3,6 @@ import { search } from '@/bot/services/music/search/'
 import { bot } from '@/bot/config'
 import { aboutCommand, helpCommand, startCommand } from '../commands'
 import { SearchResultType } from './types'
-import { handleError } from '../errors/errorHandler'
 
 export const setupHandlers = () => {
   bot.start(startCommand)
@@ -19,14 +18,14 @@ export const setupHandlers = () => {
     await ctx.reply(`🔎 Buscando música relacionada con: "${message}"...`)
 
     try {
-      const results: [] = await search(message)
+      const results = await search(message)
       if (results.length === 0) {
         await ctx.reply('❌ No se encontro ningun resultado para tu busqueda')
         return
       } else {
         const buttons = results?.map((result: SearchResultType) => [
           Markup.button.callback(
-            `🎵 ${result.title} - ${result.artist}`,
+            `🎵 ${result.artist} - ${result.title}${result.mix ? ` (${result.mix})` : ''}`,
             `info_${result.id}`
           )
         ])
