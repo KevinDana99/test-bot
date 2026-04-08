@@ -16,8 +16,8 @@ export const setupHandlers = () => {
         '❌ Ese comando no existe. Escribí /help para ver qué puedo hacer.'
       )
     }
-    //await ctx.reply(`🔎 Buscando música relacionada con: "${message}"...`);
-    return await ctx.reply(handleError('503'))
+    await ctx.reply(`🔎 Buscando música relacionada con: "${message}"...`)
+
     try {
       const results: [] = await search(message)
       if (results.length === 0) {

@@ -2,14 +2,13 @@ import initBot from '@/bot'
 import { bot } from '@/bot/config'
 import 'dotenv/config'
 import express from 'express'
-import router from './router.js'
+import router from './router'
 import config from '@/config'
-import { verifyApi } from './utils/verifyApi/index.js'
-import { initBrowser } from './v1/services/ScrapingService/browser'
-import cors from 'cors'
+import verifyApi from './utils/verifyApi'
+import { initBrowser } from './router/v1/services/ScrapingService/browser'
+
 const app = express()
 //midlewares
-app.use(cors())
 app.use(express.json())
 //seters
 app.set('json spaces', 2)
@@ -18,8 +17,7 @@ router(app)
 //exeptionhandlers
 app.listen(config.PORT, async () => {
   try {
-    await verifyApi('v1')
-    await verifyApi('v2')
+    await verifyApi()
     await initBrowser()
     initBot(bot)
   } catch (err) {
