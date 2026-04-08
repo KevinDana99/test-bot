@@ -76,13 +76,14 @@ export const setupHandlers = () => {
         const replyMarkup = Markup.inlineKeyboard(buttons).reply_markup
 
         if (image) {
-          await ctx.replyWithPhoto(
-            { url: image },
-            {
-              caption: buildTrackCard(group),
-              reply_markup: replyMarkup
+          await ctx.reply(`${buildTrackCard(group)}\n${image}`, {
+            reply_markup: replyMarkup,
+            link_preview_options: {
+              url: image,
+              prefer_small_media: true,
+              show_above_text: false
             }
-          )
+          })
           continue
         }
 
