@@ -8,22 +8,37 @@ function buildMixButtons(group: GroupedSearchResultType) {
   const buttons = []
 
   if (group.original) {
-    buttons.push(
+    buttons.push([
       Markup.button.callback('Original Mix', `info_${group.original.id}`)
-    )
+    ])
   }
 
   if (group.extended) {
-    buttons.push(
+    buttons.push([
       Markup.button.callback('Extended Mix', `info_${group.extended.id}`)
-    )
+    ])
   }
 
   if (group.radio) {
-    buttons.push(Markup.button.callback('Radio Edit', `info_${group.radio.id}`))
+    buttons.push([
+      Markup.button.callback('Radio Edit', `info_${group.radio.id}`)
+    ])
   }
 
   return buttons
+}
+
+function buildTrackCard(group: GroupedSearchResultType) {
+  return [
+    '┌────────────────────',
+    `🎵 ${group.title}`,
+    `👤 ${group.artist}`,
+    '└────────────────────'
+  ].join('\n')
+}
+
+function getTrackImage(group: GroupedSearchResultType) {
+  return group.original?.image || group.extended?.image || group.radio?.image
 }
 
 export const setupHandlers = () => {
@@ -57,10 +72,23 @@ export const setupHandlers = () => {
           continue
         }
 
-        await ctx.reply(
-          `🎵 ${group.artist} - ${group.title}`,
-          Markup.inlineKeyboard([buttons])
-        )
+        const image = getTrackImage(group)
+        const replyMarkup = Markup.inlineKeyboard(buttons).reply_markup
+
+        if (image) {
+          await ctx.replyWithPhoto(
+            { url: image },
+            {
+              caption: buildTrackCard(group),
+              reply_markup: replyMarkup
+            }
+          )
+          continue
+        }
+
+        await ctx.reply(buildTrackCard(group), {
+          reply_markup: replyMarkup
+        })
       }
     } catch (err) {
       await ctx.reply(`${err}`)
