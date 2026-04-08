@@ -3,6 +3,8 @@ import type * as cheerio from 'cheerio';
 import { BASE_URL, fetchDocument, getCSRFToken, toAbsoluteUrl } from '../browser/index.js';
 import type { ListTracksFilters, ListTracksResponse, SearchTracksResponse, TrackMixType, TrackSummary } from './types.js';
 
+const SEARCH_RESULTS_LIMIT = 5;
+
 function detectMixType(mix: string): TrackMixType {
   const mixLower = mix.toLowerCase();
 
@@ -80,7 +82,7 @@ function parseTrackCards($: cheerio.CheerioAPI): TrackSummary[] {
 
 async function searchTracks(query: string): Promise<SearchTracksResponse> {
   const $ = await fetchDocument(`${BASE_URL}/en/search?search=${encodeURIComponent(query)}`);
-  const tracks = parseTrackCards($);
+  const tracks = parseTrackCards($).slice(0, SEARCH_RESULTS_LIMIT);
 
   return {
     tracks,
